@@ -1,0 +1,28 @@
+
+GET http://localhost:3000/
+###
+GET http://localhost:3000/usuarios
+###
+GET http://localhost:3000/usuarios/4
+### Petición para agregar un nuevo usuario
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Nuevo1",
+  "apellido": "Gómez",
+  "email": "Nuevo1@gmail.com"
+}
+
+### Petición para actualizar un usuario
+PUT http://localhost:3000/usuarios/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez 7",
+  "email": "nuevoemail@gmail.com"
+}
+
+###
+DELETE http://localhost:3000/usuarios/1
