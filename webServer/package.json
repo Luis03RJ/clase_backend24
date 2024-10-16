@@ -1,0 +1,23 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "Primer servidor web con Node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luis03RJ/clase_backend24.git"
+  },
+  "keywords": [
+    "webserver",
+    "http"
+  ],
+  "author": "Luis Angel Ramirez Julian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luis03RJ/clase_backend24/issues"
+  },
+  "homepage": "https://github.com/Luis03RJ/clase_backend24#readme"
+}
