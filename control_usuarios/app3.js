@@ -1,15 +1,13 @@
-
-//Luis Angel Ramirez Julian 
-//Clase: Métodos HTTP
+// Luis Angel Ramirez Julian
+// Clase: Métodos HTTP
 
 const express = require("express");
 const app = express();
 
 // Middleware para parsear JSON
-// Middleware es como un intermediario o un traductor
 app.use(express.json());
 
-//Se guardan los usuarios 
+// Se guardan los usuarios
 const usuarios = [
   {
     id: 1,
@@ -31,15 +29,11 @@ const usuarios = [
   },
 ];
 
-
-
 // Ruta principal-- Verificamos que el servidor funcione
 app.get("/", (req, res) => {
   console.log("Petición GET en la raíz /");
   res.status(200).send("Hola Mundo");
 });
-
-
 
 // POST para agregar un nuevo usuario
 app.post("/usuarios", (req, res) => {
@@ -64,6 +58,7 @@ app.post("/usuarios", (req, res) => {
     console.error("Error: El correo ya está registrado");
     return res.status(400).json({ error: "El correo ya está registrado" });
   }
+
   // Crear nuevo usuario
   const nuevoUsuario = {
     id: usuarios.length + 1,
@@ -78,18 +73,11 @@ app.post("/usuarios", (req, res) => {
   res.status(201).json({ message: "Usuario creado exitosamente", usuario: nuevoUsuario });
 });
 
-
-
-
 // Ruta para obtener todos los usuarios
 app.get("/usuarios", (req, res) => {
   console.log("Petición GET para /usuarios");
   res.status(200).json(usuarios);
 });
-
-
-
-
 
 // Ruta para obtener un usuario por ID
 app.get("/usuarios/:id", (req, res) => {
@@ -109,10 +97,6 @@ app.get("/usuarios/:id", (req, res) => {
     res.status(404).json({ error: "Usuario no encontrado" });
   }
 });
-
-
-
-
 
 // Ruta para actualizar un usuario (PUT)
 app.put("/usuarios/:id", (req, res) => {
@@ -143,19 +127,23 @@ app.put("/usuarios/:id", (req, res) => {
     return res.status(400).json({ error: "Formato de correo no válido" });
   }
 
-  // Actualizar el usuario
+  // Verificar si el correo ya está registrado en otro usuario
+  const emailExisteEnOtroUsuario = usuarios.some(
+    (u) => u.email === email && u.id !== userId
+  );
+  if (emailExisteEnOtroUsuario) {
+    console.error("Error: El correo ya está registrado en otro usuario");
+    return res.status(400).json({ error: "El correo ya está registrado en otro usuario" });
+  }
+
+  // Actualizar el usuario solo si el correo le pertenece o no está en otro usuario
   usuario.nombre = nombre;
   usuario.apellido = apellido;
   usuario.email = email;
 
   console.log("Usuario actualizado:", usuario);
-  res
-    .status(200)
-    .json({ message: "Usuario actualizado exitosamente", usuario });
+  res.status(200).json({ message: "Usuario actualizado exitosamente", usuario });
 });
-
-
-
 
 // Ruta para eliminar un usuario
 app.delete("/usuarios/:id", (req, res) => {
@@ -176,52 +164,6 @@ app.delete("/usuarios/:id", (req, res) => {
   console.log("Usuario eliminado:", usuarioEliminado);
   res.status(200).json({ message: "Usuario eliminado correctamente" });
 });
-
-
-
-
-
-
-/// ESTE LO HACE EL PROFE
-app.put("/usuarios/:id", (req,res) => {
-  const { nombre, apellido, email } = req.body;
-
-  const id= +req.params.id;
-
-  if (!nombre || !apellido || !email) {
-    res.status(400).send({error:"Todos los campos son requeridos"});
-    return;
-  }
-
-  if (isNaN(userId)) {
-    console.error("Error: ID inválido recibido");
-    return res.status(400).json({ error: "ID inválido, debe ser un número" });
-  }
-
-  const usuario = usuarios.find((u) => u.id === userId);
-  if (!usuario) {
-    console.error(`Error: Usuario con ID ${userId} no encontrado`);
-    return res.status(404).json({ error: "Usuario no encontrado" });
-  }
-
-  usuarios.forEach((usuarios) => {
-    if(usuario.id === id){
-      usuario.nombre=nombre;
-      usuario.apellido=apellido;
-      usuario.email=email;
-    }
-
-    res.status(200).send("El usuario se haactualizado correctamente");
-  })
-
-
-});
-
-app.patch("/usuarios/:id", (req,res) => {
-  
-});
-
-///////////////////////////////
 
 // Iniciar el servidor
 app.listen(3000, () => {

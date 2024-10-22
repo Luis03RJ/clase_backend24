@@ -1,28 +1,50 @@
 
 GET http://localhost:3000/
+
 ###
+#MUESTRA TODOS LOS USUARIOS
 GET http://localhost:3000/usuarios
+
 ###
-GET http://localhost:3000/usuarios/4
-### Petición para agregar un nuevo usuario
+#BUSCA USUARIOS POR ID
+GET http://localhost:3000/usuarios/1
+
+### 
+#Petición para agregar un nuevo usuario
 POST http://localhost:3000/usuarios
 Content-Type: application/json
 
 {
-  "nombre": "Nuevo1",
-  "apellido": "Gómez",
-  "email": "Nuevo1@gmail.com"
+  "nombre": "luis",
+  "apellido": "ram",
+  "email": "anagarcia@gmail.com"
 }
 
-### Petición para actualizar un usuario
+### 
+#Petición para actualizar un usuario
+PUT http://localhost:3000/usuarios/3
+Content-Type: application/json
+
+{
+  "nombre": "PEDRO",
+  "apellido": "PEDRO",
+  "email": "anagarcia@gmail.com"
+}
+
+###
+#ELIMINAR USUARIO
+DELETE http://localhost:3000/usuarios/1
+
+
+//EST ES EL PROFE 
+//Actualiza el usuario
+###
 PUT http://localhost:3000/usuarios/1
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "apellido": "Pérez 7",
-  "email": "nuevoemail@gmail.com"
-}
+  "nombre": "luis",
+  "apellido": "ram",
+  "email": "correo1@gmail.com"
 
-###
-DELETE http://localhost:3000/usuarios/1
+}
