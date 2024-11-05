@@ -20,8 +20,6 @@ class Server {
         this.app.use(express.json());
     }
 
-
-
     routes(){
         this.app.use('/users', usersRoutes);
     }
