@@ -183,6 +183,9 @@ app.delete("/usuarios/:id", (req, res) => {
 
 
 /// ESTE LO HACE EL PROFE
+
+
+//ACTUALIZAR USUARIO
 app.put("/usuarios/:id", (req,res) => {
   const { nombre, apellido, email } = req.body;
 
@@ -216,6 +219,9 @@ app.put("/usuarios/:id", (req,res) => {
 
 
 });
+
+
+
 
 app.patch("/usuarios/:id", (req,res) => {
   

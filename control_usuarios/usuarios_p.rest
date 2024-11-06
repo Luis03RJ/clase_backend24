@@ -24,6 +24,7 @@ content-type: application/json
 }
 //en put debe de mandar todos los datos en pacth no , solo es uno
 
+
 ###
 PATCH http://localhost:3000/usuarios/1
 content-type: application/json
