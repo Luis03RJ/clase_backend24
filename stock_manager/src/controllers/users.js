@@ -1,4 +1,6 @@
 const {request , response} =  require('express');
+const pool = require('../db/conection');
+const { userQueries } = require('../models/users');
 
 // const users =  [
 //     {id: 1, name: 'Jonh dohe'},
@@ -6,43 +8,26 @@ const {request , response} =  require('express');
 //     {id: 3, name: 'jose jose'},
 // ];
 
-const getAll = async (req = request, res= response) => {
+const getAllUsers = async (req = request, res= response) => {
 
     let conn;
     try{
         conn=await pool.getConnection();
-        const users = await conn.query('SELECT * FROM users');
-
+        const users = await conn.query(userQueries.getAll);
         res.send(users);
+        //ORM Object Relational Model
+        //Lo que hacen es manejar la logic de las consultas en el modelo, nosotros lo haremos con las queries
     } catch(error){
-        res.status(500).send("Internal server error");
+        res.status(500).send(error); //'Interna server error'
     return;
     } finally{
-        if(conn) conn.end();
-
-
+        if(conn) console.end();
     }
 
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const getById= (req = request, res= response) => {
+const getUserById= async (req = request, res= response) => {
     const {id} = req.params;
     
     if(isNaN(id)){
@@ -50,17 +35,24 @@ const getById= (req = request, res= response) => {
         return;
     }
 
-    const user = users.find(users => users.id === +id);    
-                                //con + id comvetimos en id en numero ya que es cadena 
-                                //=== valida igualdad y el mismo tipo 
-    
-                                
-    if(!user){
-        res.status(404).send("user not found ");
-        return;
-    }
+    let conn;
+        try{
+        conn= await pool.getConnection();
+        const users = conn.query(userQueries.getById,[+id]);
+        
+        if(!user){
+            res.status(404).send("user not found ");
+            return;
+        }
+        res.send(user);
 
-    res.send(user);
+        } catch(error){
+            res.status(500).send(error);
+        } finally{
+            if(conn) conn.end();
+
+        }
+
 }
 
 //////////////////////////////////////TAREA
@@ -71,7 +63,8 @@ const createUser= (req= request, res = response) => {
     const {name} = req.body;
 
     if(!name){
-        res.status(400).send("Bad request. The name field is missing");
+        res.status(400).send("Name is requiered");
+        return;
     }
 
     const user = users.find(users => users.name === name);
@@ -79,31 +72,60 @@ const createUser= (req= request, res = response) => {
     if(user){
         res.status(409).send('user existe');
         return;
-
     }
-    user.push({id: users.length + 1, name});
+
+    user.push({id: users.length+1, name});
     res.send("user created exitosamente");
-}
+};
+
+// Actualizar un usuario
+const updateUser = (req = request, res = response) => {
+    const {id} = req.params;
+    const {name} = req.body;
+  
+    if (isNaN(id)) {
+        res.status(400).send('Invalid ID');
+        return;
+    }
+  
+    const user = users.find(user => user.id === +id);
+  
+    if (!user) {
+        res.status(404).send('User not found');
+        return;
+    }
+  
+    users.forEach(user=>{
+      if(user.id===+id){
+          user.name=name;
+      }
+  });
+  res.send('user update succerfully');
+  }
+
 
 
 //Actualizar 
-const updateUser = (req = request, res= response) =>{
+// const updateUser = (req = request, res= response) =>{
 
 
-    if(!user){
-        res.status(404).send("user not found ");
-        return;
-    }
+//     if(!user){
+//         res.status(404).send("user not found ");
+//         return;
+//     }
 
-    users.forEach(user => {
-        if (user.id=== +id){
-            user.name=name;
-        }
-    });
+//     users.forEach(user => {
+//         if (user.id=== +id){
+//             user.name=name;
+//         }
+//     });
 
-    res.send("usuario actucalizado ");
+//     res.send("usuario actucalizado ");
 
-}
+// }
+
+
+
 
 
 //Eliminar
@@ -154,5 +176,5 @@ const deleteUser = (req = request, res = response) => {
 
 
 
-module.exports = { getAll, getById,createUser,updateUser,deleteUser};
+module.exports = { getAllUsers, getUserById,createUser,updateUser,deleteUser};
 
