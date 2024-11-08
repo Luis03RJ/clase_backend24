@@ -21,7 +21,7 @@ const getAllUsers = async (req = request, res= response) => {
         res.status(500).send(error); //'Interna server error'
     return;
     } finally{
-        if(conn) console.end();
+        if(conn) conn.end();
     }
 
 }
@@ -40,7 +40,7 @@ const getUserById= async (req = request, res= response) => {
         conn= await pool.getConnection();
         const users = conn.query(userQueries.getById,[+id]);
         
-        if(!user){
+        if(user.length === 0){
             res.status(404).send("user not found ");
             return;
         }
@@ -59,23 +59,45 @@ const getUserById= async (req = request, res= response) => {
 //TAREA
 
 //Crear
-const createUser= (req= request, res = response) => {
-    const {name} = req.body;
+const createUser= async(req= request, res = response) => {
+    const {username,password,email} = req.body;
 
-    if(!name){
-        res.status(400).send("Name is requiered");
+    if(!username || !password || !email){
+        res.status(400).send("Bad request. Some fields are missing");
         return;
     }
 
-    const user = users.find(users => users.name === name);
+    let conn;
+    try{
+        conn= await pool.getConnection();
+        const user = await conn.query(userQueries.getByUsername,[username]);
 
-    if(user){
-        res.status(409).send('user existe');
+        if(user.length > 0){
+            res.status(409).send("user name yta esciste ");
+            return;
+
+        }
+
+        const newUser = await conn.query(userQueries.create,[username,password,email]);
+
+
+        if (newUser.affectedRows === 0){
+            res.status(500).send("user no be created");
+            return;
+        }
+        
+       
+        //console.log(newUser);
+        res.status(201).send("User created succesfully");
+
+    } catch(error){
+        res.status(500).send(error);
         return;
+    } finally{
+        if (conn) conn.end();
     }
 
-    user.push({id: users.length+1, name});
-    res.send("user created exitosamente");
+
 };
 
 // Actualizar un usuario

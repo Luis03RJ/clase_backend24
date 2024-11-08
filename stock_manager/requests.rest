@@ -1,7 +1,8 @@
+###
 GET http://localhost:3000/users/
 
 ####
-GET http://localhost:3000/users/
+GET http://localhost:3000/users/3
 
 
 //TAREA
@@ -10,12 +11,15 @@ POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-"name":"LUIS "
+"username":"PEDRO",
+"password":"batmovil",
+"email": "bata@mobil.com"
 
 }
 
 
 ###
+//ACTUALIZAR USUARIO
 PUT  http://localhost:3000/users/1
 Content-Type: application/json
 
