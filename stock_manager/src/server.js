@@ -1,3 +1,5 @@
+//PARA USAR OTRA TABLA DB -----> CREAR LA RUTA EN ESTE ARCHIVO
+
 const express = require ('express');
 const usersRoutes= require('./routes/users');
 

@@ -5,37 +5,39 @@ GET http://localhost:3000/users/
 GET http://localhost:3000/users/3
 
 
-//TAREA
+//TAREA CREAR USUARIO
 ###
 POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-"username":"PEDRO",
-"password":"batmovil",
-"email": "bata@mobil.com"
+"username":"PANCHO VILLA",
+"password":"panchita",
+"email": "pan@cho.com"
 
 }
 
 
 ###
 //ACTUALIZAR USUARIO
-PUT  http://localhost:3000/users/1
+PUT  http://localhost:3000/users/7
 Content-Type: application/json
 
 {
-"name": "LUIS carlos alfred"
+"username":"PANCHO VILLA JR",
+"password":"pANCHON",
+"email": "pancho@chocho.com"
 }
 
-
+//ELIMINAR 
 ###
-DELETE  http://localhost:3000/users/2
-Content-Type: application/json
+DELETE  http://localhost:3000/users/8 
+# Content-Type: application/json
 
-{
-"name": "LUIS carlos alfred"
+# {
+# "name": "LUIS carlos alfred"
 
-}
+# }
 
 //ESTE ME LO PASO EL IRVING 
 
