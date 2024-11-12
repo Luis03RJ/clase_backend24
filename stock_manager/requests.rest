@@ -11,9 +11,9 @@ POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-"username":"PANCHO VILLA",
-"password":"panchita",
-"email": "pan@cho.com"
+"username":"CARL ",
+"password":"SAGAN",
+"email": "panCHOPERES@cho.com"
 
 }
 

@@ -2,6 +2,7 @@
 
 const express = require ('express');
 const usersRoutes= require('./routes/users');
+const staffRoutes = require('./routes/staff'); // Importa las rutas de staff
 
 
 //const app = express();
@@ -24,6 +25,7 @@ class Server {
 
     routes(){
         this.app.use('/users', usersRoutes);
+        this.app.use('/staff', staffRoutes);    // Rutas de staff
     }
 
     start(){
