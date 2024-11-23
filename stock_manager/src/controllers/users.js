@@ -1,6 +1,10 @@
 const {request , response} =  require('express');
 const pool = require('../db/conection');
 const { userQueries } = require('../models/users');
+const bcrypt = require('bcrypt');
+
+const saltRounds=10;
+
 
 // const users =  [
 //     {id: 1, name: 'Jonh dohe'},
@@ -58,13 +62,14 @@ const getUserById= async (req = request, res= response) => {
 
 ////            ESTO FUE TAREA que depues nos enseño el PROFE
 //Crear Usuario 
-const createUser= async(req= request, res = response) => {
+const createUser= async (req= request, res = response) => {
     const {username,password,email} = req.body;
 
     if(!username || !password || !email){ //verificar que esten los campos 
         res.status(400).send("Bad request. Some fields are missing"); 
         return;
     }
+
 
     let conn;
     try{
@@ -75,7 +80,10 @@ const createUser= async(req= request, res = response) => {
             res.status(409).send("user name ya existe");
             return;
         }
-        const newUser = await conn.query(userQueries.create,[username,password,email]);
+
+        const hashPassword = await bcrypt.hash(password, saltRounds);
+
+        const newUser = await conn.query(userQueries.create,[username,hashPassword,email]);
 
         if (newUser.affectedRows === 0){ //verificar si hubo camnios en la base de Datos
             res.status(500).send("user no be created");
@@ -94,6 +102,46 @@ const createUser= async(req= request, res = response) => {
 
 };
 
+
+
+const loginUser = async(req= request, res = response) => {
+    const{username, password}=req.body;
+
+    if(!username || !password){
+        res.status(400).send('username and pasword are mandatory!');
+        return;
+    }
+
+    let conn;
+    try{
+        conn=await pool.getConnection();
+
+        const user = await conn.query(userQueries.getByUsername, [username]);
+        if (user.length===0){
+            res._construct(404).send('Bad username or password');
+            return;
+        }
+
+        const passwordMatch = await bcrypt.compare(password,user[0].password);
+        
+        if(!passwordMatch){
+            res.status(403).send('Bad username or password');
+        }
+
+        res.send('Loged in!');
+
+   
+    } catch(error){
+        res.status(500).send(error);
+        return;
+    } finally{
+        if (conn) conn.end();   //Termina la conexion al final de todo
+    }
+
+
+
+
+}
 
 //------------------------------------------------------------------------------------
 // Actualizar un usuario
@@ -229,5 +277,5 @@ const deleteUser = async (req = request, res = response) => {
 
 
 
-module.exports = { getAllUsers, getUserById,createUser,updateUser,deleteUser};
+module.exports = { getAllUsers, getUserById,createUser,loginUser,updateUser,deleteUser};
 
