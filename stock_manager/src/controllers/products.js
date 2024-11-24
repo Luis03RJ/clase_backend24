@@ -88,7 +88,8 @@ const createProducts= async(req= request, res = response) => {
             stock, 
             measurement_unit,
             price,
-            discount
+            discount,
+            id
         ]);
 
         if (newproducts_one.affectedRows === 0){ //verificar si hubo camnios en la base de Datos
@@ -105,22 +106,18 @@ const createProducts= async(req= request, res = response) => {
     }
 };
 
+
 //ACtualizar producto
-const updateStaff = async (req = request, res = response) => {
+const updateProducts = async (req = request, res = response) => {
     const { id } = req.params;
     const {
-        first_name,
-        last_name,
-        birth_date,
-        gender,
-        phone_number,
-        email,
-        address,
-        user_id
+        product,
+        description,
+        stock, 
+        measurement_unit,
+        price,
+        discount
         } = req.body;
-
-        console.log(updateStaff);
-
 
     // Verificación de ID válido
     if (isNaN(id)) {
@@ -128,40 +125,39 @@ const updateStaff = async (req = request, res = response) => {
         return;
     }
 
-    // Verificación de que todos los datos estén presentes
-    // if (!username || !password || !email) {
-    //     res.status(400).send("Bad request. Some fields are missing");
-    //     return;
-    // }
-
     let conn;
     try {
         // Conexión a la base de datos
         conn = await pool.getConnection();
 
         // Verificar si el usuario existe
-        const staffMember = await conn.query(staffQueries.getById, [id]);
-        if (staffMember.length === 0) {
-            res.status(404).send("staff not found");
+        const products_one = await conn.query(productsQueries.getById,[+id]);
+        if (products_one.length === 0) {
+            res.status(404).send("Producto not found");
+            return;
+        }
+
+        // Verificar si el nuevo nombre del producto ya está en uso por otro producto
+        const product_existente= await conn.query(productsQueries.getByproduct, [product]);
+        if (product_existente.length > 0 && product_existente[0].id !== +id) {
+            res.status(409).send("Ese Producto ya existe");
             return;
         }
 
         // Actualizar el usuario //PASAR 8 CAMPOS 
-        const updatedStaffMember = await conn.query(staffQueries.update, [
-            first_name,
-            last_name,
-            birth_date,
-            gender,
-            phone_number,
-            email,
-            address,
-            user_id,
-            +id
-        
+        const updateProducto = await conn.query(productsQueries.update, [
+            product,
+            description,
+            stock, 
+            measurement_unit,
+            price,
+            discount,
+            +id // Asegúrate de convertir el id a número para evitar errores.
         ]);
         
+        
         // Comprobar si la actualización fue exitosa
-        if (updatedStaffMember.affectedRows === 0) {
+        if (updateProducto.affectedRows === 0) {
             res.status(500).send("User could not be updated");
             return;
         }
@@ -178,10 +174,52 @@ const updateStaff = async (req = request, res = response) => {
     }
 };
 
+//Eliminar Producto
+const deleteProduct = async (req = request, res = response) => {
+    const { id } = req.params;
+
+    if (isNaN(id)) {
+      res.status(400).send('Invalid ID');
+      return;
+    }
+
+    let conn;
+    try{
+        conn =await pool.getConnection();
+        const products_one = await conn.query(productsQueries.getById, [+id]);
+
+        if(products_one.length===0){
+            res.status(500).send('eror no encontrado');
+            return;
+        }
+
+        const deleteProduct_one=await conn.query(productsQueries.delete, [+id]);
+        if(deleteProduct_one.affectedRows===0){
+            res.status(500).send('Product could not be deleted');
+            return;
+        }
+        res.send("Producto borrado exitosamente");
+
+    } catch(error){
+        res.status(500).send(error);
+        return;
+    }
+    finally{
+        // Cerrar la conexión
+        if (conn) conn.end();
+    }
+
+  };
+
+
+
+
+
+
 
 
 
 
 
 //Exportacion de Metodos 
-module.exports = { getAllProducts,getProductsById,createProducts};
+module.exports = { getAllProducts,getProductsById,createProducts,updateProducts,deleteProduct};
