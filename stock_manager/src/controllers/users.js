@@ -1,7 +1,7 @@
 const {request , response} =  require('express');
 const pool = require('../db/conection');
 const { userQueries } = require('../models/users');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); //esto es para encriptar contraseñas
 
 const saltRounds=10;
 
@@ -43,7 +43,7 @@ const getUserById= async (req = request, res= response) => {
     let conn;
         try{
         conn= await pool.getConnection();
-        const users = conn.query(userQueries.getById,[+id]);
+        const user = await conn.query(userQueries.getById,[+id]);
         
         if(user.length === 0){
             res.status(404).send("user not found ");

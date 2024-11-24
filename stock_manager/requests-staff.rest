@@ -10,12 +10,12 @@ POST http://localhost:3000/staff/
 Content-Type: application/json
 
 {
-"first_name": "John",
+"first_name": "popopopo",
 "last_name": "Doe",
 "birth_date": "1990-01-01",
 "gender":"M",
 "phone_number": "123456789",
-"email": "Johlldoe@gmail.com",
+"email": "xxx@gmail.com",
 "address": "123 Main St. New York",
 "user_id": 1
 }
@@ -27,16 +27,16 @@ PUT  http://localhost:3000/staff/2
 Content-Type: application/json
 
 {
-"first_name": "popamapkl",
-"last_name": "PAPA",
+"first_name": "popaqqqqqqapkl",
+"last_name": "PAqqqqqqqqqqqqqqqqqqPA",
 "birth_date": "1990-01-01",
 "gender":"M",
 "phone_number": "123456789",
-"email": "Johndoe@gmail.com",
+"email": "qpqopqopqo@gmail.com",
 "address": "123 Main St. New York",
 "user_id": 1
 }
 
 //ELIMINAR 
 ###
-DELETE  http://localhost:3000/staff/1
+DELETE  http://localhost:3000/staff/5
