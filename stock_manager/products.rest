@@ -1,0 +1,22 @@
+###
+GET http://localhost:3000/products/
+
+
+####
+GET http://localhost:3000/products/3
+
+//Agregar Producto
+###
+POST http://localhost:3000/products/
+Content-Type: application/json
+
+{
+  "product": "Galleta",
+  "description": "Galleta animalito",
+  "stock": 70,
+  "measurement_unit": "piece",
+  "price": 25,
+  "discount": 5
+}
+
+
