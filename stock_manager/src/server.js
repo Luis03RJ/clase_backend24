@@ -3,7 +3,8 @@
 const express = require ('express');
 const usersRoutes= require('./routes/users');
 const staffRoutes = require('./routes/staff'); // Importa las rutas de staff
-const productsRoutes = require('./routes/products'); // Importa las rutas de staff
+const productsRoutes = require('./routes/products');
+const clientsRoutes = require('./routes/clients'); 
 
 //const app = express();
 
@@ -26,7 +27,8 @@ class Server {
     routes(){
         this.app.use('/users', usersRoutes);
         this.app.use('/staff', staffRoutes);    // Rutas de staff
-        this.app.use('/products',productsRoutes);    // Rutas de staff
+        this.app.use('/products',productsRoutes);
+        this.app.use('/clients',clientsRoutes);
     }
 
     start(){

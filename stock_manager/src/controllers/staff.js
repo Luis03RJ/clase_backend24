@@ -218,7 +218,7 @@ const deleteStaff = async (req = request, res = response) => {
         }
 
         const deleteStaffMember=await conn.query(staffQueries.delete, [+id]);
-        if(deleteStaff.affectedRows===0){
+        if(deleteStaffMember.affectedRows===0){
             res.status(500).send('Staff could not be deleted');
             return;
         }

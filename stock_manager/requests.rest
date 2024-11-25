@@ -2,7 +2,7 @@
 GET http://localhost:3000/users/
 
 ####
-GET http://localhost:3000/users/2
+GET http://localhost:3000/users/9
 
 
 //TAREA CREAR USUARIO
@@ -11,9 +11,9 @@ POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-"username":"mon",
-"password":"mon1234",
-"email": "mon@cho.com"
+"username":"caca",
+"password":"luis",
+"email": "123@123.com"
 
 }
 
@@ -26,12 +26,12 @@ Content-Type: application/json
 {
 "username":"PANCHO VILLA JR",
 "password":"pANCHON",
-"email": "pancho@chocho.com"
+"email": "luis@gmail"
 }
 
 //ELIMINAR 
 ###
-DELETE  http://localhost:3000/users/8 
+DELETE  http://localhost:3000/users/9
 # Content-Type: application/json
 
 # {
