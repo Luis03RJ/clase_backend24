@@ -31,7 +31,7 @@ Content-Type: application/json
 "last_name": "PAPA",
 "birth_date": "1990-01-01",
 "gender":"M",
-"phone_number": "123456789",
+"phone_number": "1290000",
 "email": "Johndoe@gmail.com",
 "address": "123 Main St. New York",
 "user_id": 1

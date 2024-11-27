@@ -31,7 +31,7 @@ Content-Type: application/json
 
 //ELIMINAR 
 ###
-DELETE  http://localhost:3000/users/9
+DELETE  http://localhost:3000/users/7
 # Content-Type: application/json
 
 # {

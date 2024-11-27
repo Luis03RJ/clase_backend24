@@ -11,7 +11,7 @@ POST http://localhost:3000/clients/
 Content-Type: application/json
 
 {
- "rfc": "hola",
+ "rfc": "Axxxa",
   "first_name": "xxx",
   "last_name": "xxx",
   "birth_date": "1990-05-20",
@@ -38,4 +38,4 @@ Content-Type: application/json
 
 //ELIMINAR 
 ###
-DELETE  http://localhost:3000/clients/hola
+DELETE  http://localhost:3000/clients/ABC123qqqqq

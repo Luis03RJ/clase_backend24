@@ -1,264 +1,269 @@
-const {request , response} =  require('express');
-const pool = require('../db/conection');
-const { clientsQueries } = require('../models/clients');
+const { request, response } = require("express");
+const pool = require("../db/conection");
+const { clientsQueries } = require("../models/clients");
 
+// Función pa validar formato del RFC
+const validateRfc = (rfc) =>
+  /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(rfc.trim().toUpperCase());
 
-//MOSTRAR TODOS Clientes
-const getAllClients = async (req = request, res= response) => {
+// Función pa validar correo electrónico
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    let conn;
-        try{
-            conn=await pool.getConnection();
-            const clients = await conn.query(clientsQueries.getAll);
-            res.send(clients);
-    
-        } catch(error){
-            res.status(500).send(error); //'Interna server error'
-        return;
-        } finally{
-            if(conn) conn.end();
-        }
-    
-    }
+// Función pa num de teléfono
+const validatePhoneNumber = (phone_number) => /^\d{10}$/.test(phone_number);
 
-    //Mostrar Usuarios por RFC
-const getClientsByRfc= async (req = request, res= response) => {
-    const {rfc} = req.params;
+// Función pa genero
+const validateGender = (gender) => ["M", "F"].includes(gender);
 
-    //verificar si el RFC esta vacio 
-    if(!rfc || rfc.trim() === ""){
-        res.status(400).send("RFC invalido");
-        return;
-    }
-
-    let conn;
-        try{
-        conn= await pool.getConnection();
-        const clients_rfc = await conn.query(clientsQueries.getByRfc,[rfc]);
-        
-        if(clients_rfc.length === 0){
-            res.status(404).send("RFC no encontrado");
-            return;
-        }
-        res.send(clients_rfc);
-
-        } catch(error){
-            res.status(500).send(error);
-        } finally{
-            if(conn) conn.end();
-
-        }
-}
-
-
-//Crear Cliente
-const createClients= async(req= request, res = response) => {
-    const {
-        rfc,
-        first_name,
-        last_name,
-        birth_date,
-        gender,
-        phone_number,
-        email,
-        address
-        } = req.body;
-
-    if(
-        !rfc ||
-        !first_name ||
-        !last_name ||
-        !birth_date || 
-        !gender ||
-        !phone_number ||
-        !email ||
-        !address
-        ){ //verificar que esten los campos 
-        res.status(400).send("Bad request. Some fields are missing"); 
-        return;
-    }
-
-    let conn;
-    try{
-        conn= await pool.getConnection();
-
-        const clients_rfc = await conn.query(clientsQueries.getByRfc,[rfc]);
-        //verificar si existe rfc
-        if(clients_rfc.length > 0){
-            res.status(409).send("Rfc ya existe");
-            return;
-        }
-
-        //verificar si el correo existe
-        const clients_email = await conn.query(clientsQueries.getByEmail,[email]);
-        if(clients_email.length > 0){
-            res.status(409).send("Email ya existe");
-            return;
-        }
-
-        const newClients = await conn.query(clientsQueries.create,[
-            rfc,
-            first_name,
-            last_name,
-            birth_date,
-            gender,
-            phone_number,
-            email,
-            address
-        ]);
-
-        if (newClients.affectedRows === 0){ //verificar si hubo camnios en la base de Datos
-            res.status(500).send("Cliente no be created");
-            return;
-        }
-        res.status(201).send("Cliente created succesfully"); //si no pues SI HUBO cambios 
-
-    } catch(error){
-        res.status(500).send(error);
-        return;
-    } finally{
-        if (conn) conn.end();   //Termina la conexion al final de todo
-    }
-
+// Mostrar todos los clientes
+const getAllClients = async (req = request, res = response) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const clients = await conn.query(clientsQueries.getAll);
+    res.send(clients);
+  } catch (error) {
+    res.status(500).send(error.message || "Internal Server Error");
+  } finally {
+    if (conn) conn.end();
+  }
 };
 
-//Actualizar Cliente
+// Mostrar cliente por RFC
+const getClientsByRfc = async (req = request, res = response) => {
+  const { rfc } = req.params;
+
+  if (!rfc || !validateRfc(rfc)) {
+    res.status(400).send("RFC inválido o con formato incorrecto");
+    return;
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const clients_rfc = await conn.query(clientsQueries.getByRfc, [rfc]);
+
+    if (clients_rfc.length === 0) {
+      res.status(404).send("Cliente no encontrado con ese RFC");
+      return;
+    }
+    res.send(clients_rfc);
+  } catch (error) {
+    res.status(500).send(error.message || "Internal Server Error");
+  } finally {
+    if (conn) conn.end();
+  }
+};
+
+// Crear cliente
+const createClients = async (req = request, res = response) => {
+  const {
+    rfc,
+    first_name,
+    last_name,
+    birth_date,
+    gender,
+    phone_number,
+    email,
+    address,
+  } = req.body;
+
+  if (
+    !rfc ||
+    !first_name ||
+    !last_name ||
+    !birth_date ||
+    !gender ||
+    !phone_number ||
+    !email ||
+    !address
+  ) {
+    res.status(400).send("Faltan campos obligatorios");
+    return;
+  }
+
+  if (!validateRfc(rfc)) {
+    res.status(400).send("RFC con formato inválido");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    res.status(400).send("Correo electrónico inválido");
+    return;
+  }
+
+  if (!validatePhoneNumber(phone_number)) {
+    res.status(400).send("Número de teléfono inválido");
+    return;
+  }
+
+  if (!validateGender(gender)) {
+    res.status(400).send("Género inválido (debe ser 'M' o 'F')");
+    return;
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    const clients_rfc = await conn.query(clientsQueries.getByRfc, [rfc]);
+    if (clients_rfc.length > 0) {
+      res.status(409).send("El RFC ya está registrado");
+      return;
+    }
+
+    const clients_email = await conn.query(clientsQueries.getByEmail, [email]);
+    if (clients_email.length > 0) {
+      res.status(409).send("El correo electrónico ya está registrado");
+      return;
+    }
+
+    const newClients = await conn.query(clientsQueries.create, [
+      rfc,
+      first_name,
+      last_name,
+      birth_date,
+      gender,
+      phone_number,
+      email,
+      address,
+    ]);
+
+    if (newClients.affectedRows === 0) {
+      res.status(500).send("El cliente no se pudo crear");
+      return;
+    }
+    res.status(201).send("Cliente creado exitosamente");
+  } catch (error) {
+    res.status(500).send(error.message || "Internal Server Error");
+  } finally {
+    if (conn) conn.end();
+  }
+};
+
+// Actualizar cliente
 const updateClients = async (req = request, res = response) => {
-    const { rfc} = req.params;
-    const {
-        first_name,
-        last_name,
-        birth_date,
-        gender,
-        phone_number,
-        email,
-        address
-        } = req.body;
+  const { rfc } = req.params;
+  const {
+    first_name,
+    last_name,
+    birth_date,
+    gender,
+    phone_number,
+    email,
+    address,
+  } = req.body;
 
-        //ver si se llenan los campos 
-        if(
-            !first_name ||
-            !last_name ||
-            !birth_date || 
-            !gender ||
-            !phone_number ||
-            !email ||
-            !address
-            ){ //verificar que esten los campos 
-            res.status(400).send("Faltan rellenar algunos campos"); 
-            return;
-        }
+  if (!rfc || !validateRfc(rfc)) {
+    res.status(400).send("RFC inválido o con formato incorrecto");
+    return;
+  }
 
-      //verificar si el RFC esta vacio 
-      if(!rfc || rfc.trim() === ""){
-        res.status(400).send("RFC invalido");
-        return;
+  if (
+    !first_name ||
+    !last_name ||
+    !birth_date ||
+    !gender ||
+    !phone_number ||
+    !email ||
+    !address
+  ) {
+    res.status(400).send("Faltan campos obligatorios");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    res.status(400).send("Correo electrónico inválido");
+    return;
+  }
+
+  if (!validatePhoneNumber(phone_number)) {
+    res.status(400).send("Número de teléfono inválido");
+    return;
+  }
+
+  if (!validateGender(gender)) {
+    res.status(400).send("Género inválido (debe ser 'M' o 'F')");
+    return;
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    const clients_rfc = await conn.query(clientsQueries.getByRfc, [rfc]);
+    if (clients_rfc.length === 0) {
+      res.status(404).send("Cliente no encontrado con ese RFC");
+      return;
     }
 
-    let conn;
-    try {
-        // Conexión a la base de datos
-        conn = await pool.getConnection();
-
-        //Verificar si el rfc existe -> cliuente existe
-        const clients_rfc = await conn.query(clientsQueries.getByRfc,[rfc]);
-        if(clients_rfc.length === 0){
-            res.status(404).send("RFC no encontrado");
-            return;
-        }
-        
-        //ver si el correo existe
-         const clients_email = await conn.query(clientsQueries.getByEmail,[email]);
-        // if(clients_email.length > 0){
-        //     res.status(409).send("Email ya existe");
-        //     return;
-        // }
-        //
-        //ver si el correo existe y si pertenece al mismo cliente deja actualizar
-        if (clients_email.length > 0) {
-            // Si el correo ya existe, verificar que sea del mismo cliente
-            const client = clients_email[0]; // El primer cliente con ese correo
-            if (client.rfc !== rfc) { // Si el RFC no coincide, el correo pertenece a otro cliente
-                res.status(409).send("Email ya existe en otro cliente");
-                return;
-            }
-        }
-
-        // Actualizar el usuario //PASAR 8 CAMPOS 
-        const updatedClients = await conn.query(clientsQueries.update, [
-            first_name,
-            last_name,
-            birth_date,
-            gender,
-            phone_number,
-            email,
-            address,
-            rfc
-        ]);
-        
-        // Comprobar si la actualización fue exitosa
-        if (updatedClients.affectedRows === 0) {
-            res.status(500).send("Cliente no actualizado correctamente");
-            return;
-        }
-
-        // Responder con éxito
-        res.status(200).send("clients updated successfully");
-
-    } catch (error) {
-        // Manejo de errores
-        res.status(500).send(error.message || "Internal Server Error");
-    } finally {
-        // Cerrar la conexión
-        if (conn) conn.end();
+    const clients_email = await conn.query(clientsQueries.getByEmail, [email]);
+    if (clients_email.length > 0 && clients_email[0].rfc !== rfc) {
+      res.status(409).send("El correo electrónico pertenece a otro cliente");
+      return;
     }
+
+    const updatedClients = await conn.query(clientsQueries.update, [
+      first_name,
+      last_name,
+      birth_date,
+      gender,
+      phone_number,
+      email,
+      address,
+      rfc,
+    ]);
+
+    if (updatedClients.affectedRows === 0) {
+      res.status(500).send("El cliente no se pudo actualizar");
+      return;
+    }
+
+    res.status(200).send("Cliente actualizado exitosamente");
+  } catch (error) {
+    res.status(500).send(error.message || "Internal Server Error");
+  } finally {
+    if (conn) conn.end();
+  }
 };
 
-//Eliminar Cliente  --> dejar inactivo
+// Eliminar cliente (lógico)
 const deleteClients = async (req = request, res = response) => {
-    const { rfc } = req.params;
-    
-    //verificar si el RFC esta vacio 
-    if(!rfc || rfc.trim() === ""){
-        res.status(400).send("RFC invalido");
-        return;
+  const { rfc } = req.params;
+
+  if (!rfc || !validateRfc(rfc)) {
+    res.status(400).send("RFC inválido o con formato incorrecto");
+    return;
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    const clients_rfc = await conn.query(clientsQueries.getByRfc, [rfc]);
+    if (clients_rfc.length === 0) {
+      res.status(404).send("Cliente no encontrado con ese RFC");
+      return;
     }
 
-    let conn;
-    try{
-        conn =await pool.getConnection();
-        
-        //Verificar si el rfc existe -> cliuente existe
-        const clients_rfc = await conn.query(clientsQueries.getByRfc,[rfc]);
-        if(clients_rfc.length === 0){
-            res.status(404).send("RFC no encontrado");
-            return;
-        }
-
-        const deleteClients_one= await conn.query(clientsQueries.delete,[rfc]);
-        if(deleteClients_one.affectedRows===0){
-            res.status(500).send('El cliente no ha sido borrado');
-            return;
-        }
-
-        res.send("el cliente ha sido borrado exitosamente");
-
-    } catch(error){
-        res.status(500).send(error);
-        return;
-    }
-    finally{
-        // Cerrar la conexión
-        if (conn) conn.end();
-
+    const deleteClients_one = await conn.query(clientsQueries.delete, [rfc]);
+    if (deleteClients_one.affectedRows === 0) {
+      res.status(500).send("El cliente no se pudo eliminar");
+      return;
     }
 
-  };
+    res.send("Cliente eliminado exitosamente");
+  } catch (error) {
+    res.status(500).send(error.message || "Internal Server Error");
+  } finally {
+    if (conn) conn.end();
+  }
+};
 
-
-
-
-
-    
-
-module.exports = { getAllClients,getClientsByRfc,createClients,updateClients,deleteClients};
+module.exports = {
+  getAllClients,
+  getClientsByRfc,
+  createClients,
+  updateClients,
+  deleteClients,
+};

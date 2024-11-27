@@ -5,6 +5,7 @@ const usersRoutes= require('./routes/users');
 const staffRoutes = require('./routes/staff'); // Importa las rutas de staff
 const productsRoutes = require('./routes/products');
 const clientsRoutes = require('./routes/clients'); 
+const salesRoutes = require("./routes/sales");
 
 //const app = express();
 
@@ -29,6 +30,7 @@ class Server {
         this.app.use('/staff', staffRoutes);    // Rutas de staff
         this.app.use('/products',productsRoutes);
         this.app.use('/clients',clientsRoutes);
+        this.app.use("/sales", salesRoutes);
     }
 
     start(){

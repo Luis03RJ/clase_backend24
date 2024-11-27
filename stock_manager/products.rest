@@ -3,7 +3,7 @@ GET http://localhost:3000/products/
 
 
 ####
-GET http://localhost:3000/products/3
+GET http://localhost:3000/products/4
 
 //Agregar Producto
 ###
@@ -21,7 +21,7 @@ Content-Type: application/json
 
 ###
 //ACTUALIZAR Producto
-PUT  http://localhost:3000/products/5
+PUT  http://localhost:3000/products/4
 Content-Type: application/json
 
 {
@@ -36,6 +36,6 @@ Content-Type: application/json
 
 //ELIMINAR 
 ###
-DELETE  http://localhost:3000/products/3
+DELETE  http://localhost:3000/products/4
 
 
