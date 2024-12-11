@@ -1,0 +1,13 @@
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+"email": "luis@angel.com",
+"password":"1234"
+}
+
+
+###
+GET http://localhost:3000/users/protected
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzMzOTQxNTAxLCJleHAiOjE3MzM5NDE4MDF9.3qu3YgyPADnp_0gVya7fEXBB1ntDk_8bzt5M8p6-EXA

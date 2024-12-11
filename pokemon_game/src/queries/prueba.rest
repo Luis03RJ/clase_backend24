@@ -1,0 +1,34 @@
+###
+GET http://localhost:3000/users/
+
+//por ID 
+###
+GET http://localhost:3000/users/4
+
+//Creando User
+###
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+"first_name":"luis",
+"last_name":"angel",
+"email": "luis@angel.com",
+"password":"1234"
+}
+
+
+###
+PUT http://localhost:3000/users/4
+Content-Type: application/json
+
+{
+"first_name":"popopopo",
+"last_name":"ccc",
+"email": "ZZZ@ZZ.com"
+}
+
+###
+//eliminar
+
+DELETE http://localhost:3000/users/5
