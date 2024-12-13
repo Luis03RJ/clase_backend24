@@ -11,6 +11,8 @@ const SALT_ROUNDS= 10;
 
 const userProtected= async (req= resquest, res= response)=>{
     res.send({message: "YoU HAVE ACCESs!!!"});
+    console.log({req});
+
 }
 
 const getAllUsers= async (req =request, res=response) => {
@@ -40,6 +42,22 @@ const createUser = async (req =request, res=response) => {
         email,
         password
     }= req.body;
+
+
+
+    const {id , is_admin}=req;
+
+    console.log({id, is_admin});
+
+    if(!id || is_admin === undefined){
+        res.status(400).json({message: "Missing requiered fields"});
+        return;
+    }
+
+    if(is_admin !== 1){
+        res.status(400).json({message: "You don't have enough privileges"});
+        return;
+    }
 
     if(!first_name ||!last_name ||!email||!password){
         res.status(400).json({message: "Missing requiered fields"});

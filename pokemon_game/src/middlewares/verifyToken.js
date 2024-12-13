@@ -10,7 +10,6 @@ require('dotenv').config();
 const secret = process.env.SECRET;
 
 
-
 const verifyToken= (req=request, res=response, next) => {
     const header = req.header("Authorization") || "";
     const token =header.split(" ")[1];//importante poner el expacio ya que cuenta de lo contrario nos dara error a la hora 
@@ -22,8 +21,9 @@ const verifyToken= (req=request, res=response, next) => {
     try{
 
         const payload=jwt.verify(token, secret);
+        console.log({payload});
         req.id= payload.id;
-        req.isAdmin = payload.isAdmin;
+        req.is_Admin = payload.is_Admin;
         next();
 
     }catch(err){

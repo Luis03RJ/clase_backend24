@@ -1,0 +1,22 @@
+GET http://localhost:3000/users Content-Type: application/json Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNfYWRtaW4iOjEsImlhdCI6MTczNDAyMTU4MCwiZXhwIjoxNzM0MDIxODgwfQ.rRbNuiBMqCbS-8y_WOZaEDGoi3yzfzQmXctzzd4Xnbs
+
+###Mostar usuario por ID GET http://localhost:3000/users/1 Content-Type: application/json Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNfYWRtaW4iOjEsImlhdCI6MTczNDAyMTU4MCwiZXhwIjoxNzM0MDIxODgwfQ.rRbNuiBMqCbS-8y_WOZaEDGoi3yzfzQmXctzzd4Xnbs
+
+### Agregar POST
+http://localhost:3000/users 
+Content-Type: application/json Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaXNfYWRtaW4iOjAsImlhdCI6MTczNDAyMjkxMywiZXhwIjoxNzM0MDIzMjEzfQ.NIG1PMYzUyK1Ng4PptqXHaSQU9Zx_mZ8WpuYlhb9GH0
+
+{
+"first_name":"Maria",
+ "last_name": "Camacho",
+  "email": "maria@gmail.com",
+   "password": "maria123"
+}
+
+### EDITAR PUT http://localhost:3000/users/5 Content-Type: application/json
+
+{
+"first_name":" Rosalia", "last_name": "Camacho", "email": "rosalia@gmail.com"
+}
+
+###Elimimar usuario DELETE http://localhost:30

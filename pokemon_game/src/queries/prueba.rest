@@ -1,34 +1,43 @@
 ###
 GET http://localhost:3000/users/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzM0MTI0OTcyLCJleHAiOjE3MzQxMjUyNzJ9.6vMwxm01KLaG_mxk92N_j4BPeDTy2RcqUgX6BR2JyjQ
 
 //por ID 
 ###
 GET http://localhost:3000/users/4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzM0MTI0OTcyLCJleHAiOjE3MzQxMjUyNzJ9.6vMwxm01KLaG_mxk92N_j4BPeDTy2RcqUgX6BR2JyjQ
 
 //Creando User
 ###
 POST http://localhost:3000/users
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzM0MTI2MzM5LCJleHAiOjE3MzQxMjY2Mzl9.UjBlQoPJBccNFlafnC7CaLBVB9J5sl4iKzBvAYKLKtQ
 
 {
-"first_name":"luis",
-"last_name":"angel",
-"email": "luis@angel.com",
+"first_name":"Tony",
+"last_name":"start",
+"email":"iro@start.com",
 "password":"1234"
 }
+//solo los administradores deben de poder crear un usuario los demas no por lo cual lo debemos de evitar
+
 
 
 ###
 PUT http://localhost:3000/users/4
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzM0MTI2MDI3LCJleHAiOjE3MzQxMjYzMjd9.Lt9nA1pLkxU7-yvowW6_EM_1SYwOMxwvitY0zF-9t18
 
 {
-"first_name":"popopopo",
+"first_name":"ajaaja",
 "last_name":"ccc",
-"email": "ZZZ@ZZ.com"
+"email": "ajaja@ZZ.com"
 }
 
 ###
 //eliminar
 
-DELETE http://localhost:3000/users/5
+DELETE http://localhost:3000/users/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNzM0MTI2MDI3LCJleHAiOjE3MzQxMjYzMjd9.Lt9nA1pLkxU7-yvowW6_EM_1SYwOMxwvitY0zF-9t18
